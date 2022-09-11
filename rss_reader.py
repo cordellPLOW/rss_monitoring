@@ -19,7 +19,6 @@ keywords = [
     'dachowanie',
     'tragicznego',
     'LPR'
-    
 ]
 
 class Feeder():
@@ -28,7 +27,7 @@ class Feeder():
 
     def __init__(self, path: str):
         self.path = path
-        self._data = {}
+        self.data = {}
         
     def response(self):
         return requests.get(self.path)
@@ -56,20 +55,23 @@ class Feeder():
             # Wyszukiwanie słów kluczowych w tytułach i treści artykułów
             if (any(substring in _title for substring in keywords) or 
                 any(substring in _description for substring in keywords)):
-                self._data['item' + '_' + str(i)] = {
+                self.data['item' + '_' + str(i)] = {
                     'title': _title,
                     'description': _description,
                     'link': _link,
-                    'publictation': _publication,
+                    'pub_date': _publication.date(),
+                    'pub_time': _publication.time()
                 }
                 i += 1
-        return self._data
+        return self.data
     
     def pubdate_to_datetime(self, pub_date: str):
         if "Z" in pub_date:
             date = datetime.strptime(pub_date, "%Y-%m-%dT%H:%M:%S.%f%z")
+            date = date.replace(tzinfo=None)
         else:
             date = datetime.strptime(pub_date, "%a, %d %b %Y %H:%M:%S %z")
+            date = date.replace(tzinfo=None)
         return date
     
     def remove_tags(self, html: str) -> str:
@@ -85,3 +87,10 @@ class Feeder():
         soup = BeautifulSoup(html, "html.parser")
         return soup.get_text()
 
+if __name__ == '__main__':
+    url = 'https://tvn24.pl/tvnwarszawa/najnowsze.xml'
+    t = Feeder(url).create_dict()
+    d = t['item_0']['publictation']
+    
+    print(d.time())
+    
