@@ -30,8 +30,10 @@ class Feeder():
         self.data = {}
         
     def response(self):
-        return requests.get(self.path)
-    
+        _response = requests.get(self.path)
+        if _response.status_code == 200:
+            return _response
+        
     def create_root(self) -> et.Element:
         """ Przetwarza text XML odpowiedzi obiektu żądania
 
