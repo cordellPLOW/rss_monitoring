@@ -21,4 +21,4 @@ def test_response_positive(tvn_rss):
     
 def test_response_negative(remiza):
     feeder = Feeder(remiza)
-    assert feeder.response() == None
+    assert feeder.response() == 'Bad response'

@@ -31,8 +31,10 @@ class Feeder():
         
     def response(self):
         _response = requests.get(self.path)
-        if _response.status_code == 200:
-            return _response
+        if _response.ok:
+            return _response.text
+        else:
+            return "Bad response"
         
     def create_root(self) -> et.Element:
         """ Przetwarza text XML odpowiedzi obiektu żądania
@@ -40,7 +42,7 @@ class Feeder():
         Returns:
             et.Element: struktura pliku XML
         """
-        return et.fromstring(self.response().text)
+        return et.fromstring(self.response())
     
     def create_dict(self):
         i = 0
@@ -70,9 +72,9 @@ class Feeder():
     def pubdate_to_datetime(self, pub_date: str):
         if "Z" in pub_date:
             date = datetime.strptime(pub_date, "%Y-%m-%dT%H:%M:%S.%f%z")
-            date = date.replace(tzinfo=None)
+            date = date.replace(tzinfo=False)
         else:
-            date = datetime.strptime(pub_date, "%a, %d %b %Y %H:%M:%S %z")
+            date = datetime.strptime(pub_date, "%a, %d %b %Y %H:%M:%S %Z")
             date = date.replace(tzinfo=None)
         return date
     
@@ -90,9 +92,8 @@ class Feeder():
         return soup.get_text()
 
 if __name__ == '__main__':
-    url = 'https://tvn24.pl/tvnwarszawa/najnowsze.xml'
-    t = Feeder(url).create_dict()
-    d = t['item_0']['publictation']
-    
-    print(d.time())
+    url = 'https://wydarzenia.interia.pl/feed'
+    t = Feeder(url)
+    t = t.response().text
+    print(t)
     

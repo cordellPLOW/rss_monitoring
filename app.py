@@ -17,11 +17,7 @@ def index():
         'https://tvn24.pl/wroclaw.xml',
         'https://tvn24.pl/poznan.xml',
         'https://tvn24.pl/pomorze.xml',
-        'https://remiza.com.pl/strona-glowna/feed/',
-        'https://www.rmf24.pl/fakty/polska/feed'
-        'https://wydarzenia.interia.pl/feed'
-        'https://www.polsatnews.pl/rss/polska.xml',
-        'https://wydarzenia.interia.pl/wiadomosci-lokalne/feed'
+
     ]
     for url in urls:
         feed = Feeder(url)
